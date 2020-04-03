@@ -37,7 +37,7 @@ public class ServerGraph implements Graph {
     }
 
     @Override
-    public String apply (String[] batchLines) throws RemoteException{
+    public String exectue(String[] batchLines) throws RemoteException{
         StringBuilder collectedResults = new StringBuilder();
 
         for (String command: batchLines){

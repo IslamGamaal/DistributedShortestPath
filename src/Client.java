@@ -2,7 +2,6 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.sql.Timestamp;
 
 public class Client {
     private static final int MAX_BATCH_COUNT = 10;
@@ -26,7 +25,7 @@ public class Client {
             else {
                 batch = generator.generateBatchRandomly(percentageOfWrites, stub.getGraphSize(), MAX_BATCH_COUNT);
                 logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH, batch, System.currentTimeMillis());
-                String batchResult = stub.apply(batch.split("\n"));
+                String batchResult = stub.exectue(batch.split("\n"));
                 logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH_RESULT, batchResult, System.currentTimeMillis());
             }
         } catch (NotBoundException e) {

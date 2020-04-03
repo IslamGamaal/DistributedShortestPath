@@ -20,9 +20,9 @@ public class Logger {
 
         String logLine = "Client Number : " + client_id + "\t----\t" +  "at " +timestamp.toString() + "\t----\t";
 
-        if(type.equals(LogType.BATCH)) logLine += "BATCHED: ";
-        else if(type.equals(LogType.BATCH_RESULT)) logLine+= "RECEIVED: ";
-        else logLine+= "INITIALIZING: ";
+        if(type.equals(LogType.BATCH)) logLine += "Batched: ";
+        else if(type.equals(LogType.BATCH_RESULT)) logLine+= "Received Result : ";
+        else logLine+= "Initializing: ";
 
         logLine += content.replaceAll("\n", ", ");
         logLine += "\n\n";
