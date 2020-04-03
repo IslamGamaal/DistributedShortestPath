@@ -12,7 +12,7 @@ public class Logger {
     }
 
     enum LogType {
-        BATCH, BATCH_RESULT;
+        BATCH, BATCH_RESULT, INITIALIZER;
     }
 
     public void log(long client_id, LogType type, String content, long currentMillis) {
@@ -21,7 +21,8 @@ public class Logger {
         String logLine = "Client Number : " + client_id + "\t----\t" +  "at " +timestamp.toString() + "\t----\t";
 
         if(type.equals(LogType.BATCH)) logLine += "BATCHED: ";
-        else logLine+= "RECEIVED: ";
+        else if(type.equals(LogType.BATCH_RESULT)) logLine+= "RECEIVED: ";
+        else logLine+= "INITIALIZING: ";
 
         logLine += content.replaceAll("\n", ", ");
         logLine += "\n\n";
