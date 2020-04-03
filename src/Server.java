@@ -1,8 +1,16 @@
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 
 public class Server {
     public static void main(String[] args) {
-        GraphInterface stub = new GraphServer();
-        Naming.rebind("rmi://localhost:5000/root", stub);
+        Graph stub = new ServerGraph();
+        try {
+            Naming.rebind("rmi://localhost:5000/root", stub);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 }

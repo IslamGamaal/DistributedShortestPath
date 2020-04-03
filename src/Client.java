@@ -9,14 +9,14 @@ public class Client {
     public static void main(String[] args) {
         Logger logger = new Logger("log.txt");
         try {
-            GraphInterface stub = (GraphInterface) Naming.lookup("rmi://localhost:5000/root");
+            Graph stub = (Graph) Naming.lookup("rmi://localhost:5000/root");
             BatchGenerator generator = new BatchGenerator();
 
             //String batch = generator.generateBatchFromInputFile("");
             //String batch = generator.generateBatchFromUserInput();
             String batch = generator.generateBatchRandomly(50, 10, 10);
             logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH, batch, System.currentTimeMillis());
-            String batchResult = stub.executeBatch(batch);
+            String batchResult = stub.apply(batch.split("\n"));
             logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH_RESULT, batchResult, System.currentTimeMillis());
 
         } catch (NotBoundException e) {
