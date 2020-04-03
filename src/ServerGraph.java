@@ -108,8 +108,19 @@ public class ServerGraph implements Graph {
 
 
     @Override
-    public String initGraph(String edges) throws RemoteException {
-        return null;
+    public String initGraph(String[] edges) throws RemoteException {
+
+        for (String edge : edges){
+            String[] splittedEdge = edge.split(" ");
+            if (splittedEdge.length == 2){
+                int id1 = Integer.parseInt(splittedEdge[0]);
+                int id2 = Integer.parseInt(splittedEdge[1]);
+                addEdge(id1, id2);
+            }
+
+        }
+
+        return "R";
     }
 
 }
