@@ -1,14 +1,16 @@
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ServerGraph implements Graph {
+public class ServerGraph extends UnicastRemoteObject implements Graph {
 
     HashMap<Integer, Node> nodes;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    ServerGraph() {
+    ServerGraph() throws RemoteException {
+        super();
         nodes = new HashMap<>();
     }
 
@@ -27,17 +29,20 @@ public class ServerGraph implements Graph {
 
         if (fromNode == null) {
             fromNode = new Node(id1);
+            nodes.put(fromNode.getNodeId(), fromNode);
         }
 
         if (toNode == null) {
             toNode = new Node(id2);
+            nodes.put(toNode.getNodeId(), toNode);
         }
 
         fromNode.addNext(toNode);
     }
 
     @Override
-    public String exectue(String[] batchLines) throws RemoteException{
+    public String exectue(String batch) throws RemoteException{
+        String[] batchLines = batch.split("\n");
         StringBuilder collectedResults = new StringBuilder();
 
         for (String command: batchLines){
@@ -47,7 +52,7 @@ public class ServerGraph implements Graph {
             } else {
                 String[] splittedCommand = command.split(" ");
                 if (splittedCommand.length<3){
-                    collectedResults.append("Wrong Format!");
+                    collectedResults.append("Wrong Format!").append("\n");
                     continue;
                 }
                 String operand = splittedCommand[0];
@@ -56,7 +61,7 @@ public class ServerGraph implements Graph {
 
                 if (command.contains("Q")){
                     this.lock.readLock().lock();
-                    collectedResults.append(performQuery(id1, id2));
+                    collectedResults.append(performQuery(id1, id2)).append("\n");
                     this.lock.readLock().unlock();
                 } else if (command.contains("A")){
                     this.lock.writeLock().lock();
@@ -73,13 +78,17 @@ public class ServerGraph implements Graph {
     }
 
     @Override
-    public int getGraphSize() {
+    public int getGraphSize() throws RemoteException {
         return nodes.size();
     }
 
     public String performQuery (int id1, int id2){
         if (!nodes.containsKey(id1) || !nodes.containsKey(id2)){
             return "-1";
+        }
+
+        if(id1 == id2) {
+            return "0";
         }
 
         Node startNode = nodes.get(id1);
@@ -108,8 +117,8 @@ public class ServerGraph implements Graph {
 
 
     @Override
-    public String initGraph(String[] edges) throws RemoteException {
-
+    public String initGraph(String edgesString) throws RemoteException {
+        String[] edges = edgesString.split("\n");
         for (String edge : edges){
             String[] splittedEdge = edge.split(" ");
             if (splittedEdge.length == 2){

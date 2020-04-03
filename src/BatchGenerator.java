@@ -10,7 +10,7 @@ public class BatchGenerator {
         String line = sc.nextLine();
         String generatedBatch = "";
 
-        while(!line.equals("F")) {
+        while(!line.equals("F") && !line.equals("S")) {
             generatedBatch += line + "\n";
             line = sc.nextLine();
         }
@@ -26,8 +26,8 @@ public class BatchGenerator {
 
         while(i >= 0) {
             String currentOperation = generateRandomOperation(percentageOfWrites);
-            int num1 = generateRandomNumber(0, numOfNodes - 1);
-            int num2 = generateRandomNumber(0, numOfNodes - 1);
+            int num1 = generateRandomNumber(1, numOfNodes);
+            int num2 = generateRandomNumber(1, numOfNodes);
             String singleQuery = currentOperation + " " + num1 + " " + num2 + '\n';
             generatedBatch += singleQuery;
             i--;
