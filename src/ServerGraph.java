@@ -72,6 +72,11 @@ public class ServerGraph implements Graph {
         return collectedResults.toString();
     }
 
+    @Override
+    public int getGraphSize() {
+        return nodes.size();
+    }
+
     public String performQuery (int id1, int id2){
         if (!nodes.containsKey(id1) || !nodes.containsKey(id2)){
             return "-1";
