@@ -20,17 +20,17 @@ public class Logger {
 
         String logLine = "Client Number : " + client_id + "\t----\t" +  "at " +timestamp.toString() + "\t----\t";
 
-        if(type.equals(LogType.BATCH)) logLine += "Batched: ";
-        else if(type.equals(LogType.BATCH_RESULT)) logLine+= "Received Result : ";
-        else logLine+= "Initializing: ";
+        if(type.equals(LogType.BATCH)) logLine += "Batched  \t----\t";
+        else if(type.equals(LogType.BATCH_RESULT)) logLine+= "Received  \t----\t";
+        else logLine+= "Initialize\t----\t";
 
         logLine += content.replaceAll("\n", ", ");
         logLine += "\n\n";
 
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(filePath));
-            writer.write(logLine);
+            writer = new BufferedWriter(new FileWriter(filePath,true));
+            writer.append(logLine);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

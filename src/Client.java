@@ -2,29 +2,33 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Client {
+    private static long clientId;
     private static int maxBatchCount = 10;
     private static int percentageOfWrites = 50;
     private static boolean isInitializer = true;
     private static String filePath = "";
     public static void main(String[] args) {
+        Random r = new Random();
+        clientId = r.nextInt((900000 - 100000) + 1);
         Logger logger = new Logger("log.txt");
         Scanner sc = new Scanner(System.in);
         System.out.print("Hello Client, to you want to initialize ? \n1-Yes\n2-No\n");
+        int inputType = 2;
         int init = sc.nextInt();
         switch (init) {
             case 1:
                 isInitializer = true;
                 System.out.print("How do you like to give input ? \n1-Input File\n2-User Input\n");
+                inputType = sc.nextInt();
                 break;
             case 2:
                 isInitializer = false;
-                System.out.print("How do you like to give input ? \n1-Input File\n2-User Input\n3-Random\n");
                 break;
         }
-        int inputType = sc.nextInt();
         try {
             Graph stub = (Graph) Naming.lookup("rmi://localhost:5000/root");
             BatchGenerator generator = new BatchGenerator();
@@ -32,6 +36,9 @@ public class Client {
             if (isInitializer) {
                 switch (inputType) {
                     case 1:
+                        System.out.print("Enter file path: ");
+                        filePath = sc.nextLine();
+                        filePath = sc.nextLine();
                         batch = generator.generateBatchFromInputFile(filePath);
                         break;
                     default:
@@ -41,10 +48,10 @@ public class Client {
                 }
                 isInitializer = false;
                 System.out.println("The initialization graph is: \n" + batch);
-                logger.log(Thread.currentThread().getId(), Logger.LogType.INITIALIZER, batch, System.currentTimeMillis());
+                logger.log(clientId, Logger.LogType.INITIALIZER, batch, System.currentTimeMillis());
                 String batchResult = stub.initGraph(batch);
                 System.out.println("The resulted output: \n" + batchResult);
-                logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH_RESULT, batchResult, System.currentTimeMillis());
+                logger.log(clientId, Logger.LogType.BATCH_RESULT, batchResult, System.currentTimeMillis());
             }
 
             while (true) {
@@ -64,11 +71,11 @@ public class Client {
                         break;
                 }
                 System.out.println("The batch is: \n" + batch);
-                logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH, batch, System.currentTimeMillis());
+                logger.log(clientId, Logger.LogType.BATCH, batch, System.currentTimeMillis());
                 String batchResult = stub.exectue(batch);
                 System.out.println("The batch result: \n" + batchResult);
-                logger.log(Thread.currentThread().getId(), Logger.LogType.BATCH_RESULT, batchResult, System.currentTimeMillis());
-                Thread.sleep(3000);
+                logger.log(clientId, Logger.LogType.BATCH_RESULT, batchResult, System.currentTimeMillis());
+                Thread.sleep(1000);
             }
         } catch (NotBoundException e) {
             e.printStackTrace();
@@ -86,7 +93,8 @@ public class Client {
         int inputType = sc.nextInt();
         switch(inputType) {
             case 1:
-                System.out.println("Enter file path");
+                System.out.println("Enter file path\n");
+                filePath = sc.nextLine();
                 filePath = sc.nextLine();
                 break;
             case 2:
